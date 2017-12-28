@@ -4,6 +4,7 @@ add_executable(
 	${PROJECT_NAME}
 
 	${PROJECT_SOURCE_DIR}/test_library_loading.cpp
+	${PROJECT_SOURCE_DIR}/test_symbol_loading.cpp
 	${PROJECT_SOURCE_DIR}/mocks/dlfcn_mock.cpp
 )
 
