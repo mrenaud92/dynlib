@@ -3,7 +3,7 @@ project (libdlibxx_test LANGUAGES CXX)
 add_executable(
 	${PROJECT_NAME}
 
-	${PROJECT_SOURCE_DIR}/library_loading.cpp
+	${PROJECT_SOURCE_DIR}/test_library_loading.cpp
 	${PROJECT_SOURCE_DIR}/mocks/dlfcn_mock.cpp
 )
 
