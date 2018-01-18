@@ -38,7 +38,7 @@ install(FILES "${PROJECT_SOURCE_DIR}/LICENSE" DESTINATION "share/licenses/${PROJ
 add_subdirectory(examples)
 
 if (DLIBXX_ENABLE_TESTS)
-	enable_testing()
-	add_subdirectory(external/googletest EXCLUDE_FROM_ALL)
-	add_subdirectory(test)
+  enable_testing()
+  add_subdirectory(external/googletest EXCLUDE_FROM_ALL)
+  add_subdirectory(test)
 endif()
