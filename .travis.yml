@@ -1,5 +1,5 @@
 sudo: true
-language: cpp
+language: generic
 
 os: linux
 dist: trusty
@@ -7,6 +7,7 @@ dist: trusty
 cache:
   directories:
     - ${TRAVIS_BUILD_DIR}/deps/cmake
+    - ${TRAVIS_BUILD_DIR}/deps/boost
 
 matrix:
   include:
@@ -139,7 +140,6 @@ matrix:
 
 install:
   - DEPS_DIR="${TRAVIS_BUILD_DIR}/deps"
-  - sudo apt-get install libboost-all-dev
   - mkdir -pv "${DEPS_DIR}" && cd "${DEPS_DIR}"
 
   ## Update the ancient version of CMake installed on Travis...
@@ -153,14 +153,27 @@ install:
         travis_retry wget --no-check-certificate --quiet -O - "${CMAKE_URL}" | tar -xz --strip-components=1 -C cmake
         export PATH="${DEPS_DIR}/cmake/bin:${PATH}"
       fi
-      cd "${TRAVIS_BUILD_DIR}"
   - cmake --version
+
+  ## Travis also has an older version of Boost (1.55.0) that does not contain
+  ## boost::optional::value. This came about in 1.56.0... We grab a copy of
+  ## version 1.58.0 which is what ships with Ubuntu 16.04 LTS and could, therefore
+  ## be considered the minimum supported version of Boost.
+  - |
+      if [[ "${TRAVIS_OS_NAME}" == "linux" ]]; then
+        BOOST_URL="http://sourceforge.net/projects/boost/files/boost/1.58.0/boost_1_58_0.tar.gz"
+        mkdir -p boost/boost_1_58_0
+        travis_retry wget -O - "${BOOST_URL}" | tar -xz --strip-components=1 -C boost/boost_1_58_0
+        export BOOST_ROOT="${DEPS_DIR}/boost/boost_1_58_0"
+      fi
+  - cd "${TRAVIS_BUILD_DIR}"
+  - echo "${BOOST_ROOT}"
 
 before_script:
   - mkdir -p build
   - cd build
-  - cmake -DCMAKE_BUILD_TYPE=${BUILD_TYPE} -DDLIBXX_ENABLE_TESTS=ON ..
+  - cmake -DCMAKE_BUILD_TYPE=${BUILD_TYPE} -DDLIBXX_ENABLE_TESTS=ON -DBOOST_ROOT="${BOOST_ROOT}" ..
 
 script:
-  - make -j2
+  - cmake --build .
   - ctest --output-on-failure

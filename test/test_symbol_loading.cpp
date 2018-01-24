@@ -49,7 +49,7 @@ TEST_F(TestLoadSymbol, Lookup_WhenOptionalIsValid_FunctionWillBeCallable) {
 
   auto function = lib.lookup<void(int, char)>("load_me");
 
-  EXPECT_NO_THROW(function.get()(int{}, char{}));
+  EXPECT_NO_THROW(function.value()(int{}, char{}));
 }
 
 TEST_F(TestLoadSymbol, Lookup_WhenSymbolNotFound_WillReturnEmptyOptional) {
@@ -60,7 +60,7 @@ TEST_F(TestLoadSymbol, Lookup_WhenSymbolNotFound_WillReturnEmptyOptional) {
 
   auto function = lib.lookup<void(int, char)>("load_me");
 
-  EXPECT_THROW(function.get()(int{}, char{}), std::bad_function_call);
+  EXPECT_THROW(function.value()(int{}, char{}), std::bad_function_call);
 }
 
 class TestFunctionPtrCast : public Test {};
